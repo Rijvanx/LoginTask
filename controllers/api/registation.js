@@ -1,5 +1,6 @@
 const con = require("../../Databases/config");
 const common = require("../common/function");
+const jwt = require('jsonwebtoken');
 
 
 exports.InsertRegistation = async (req, res) => {
@@ -15,6 +16,7 @@ exports.InsertRegistation = async (req, res) => {
     var response;
     try {
 
+        // check email alredy exist if exist then get is_active to check user has alredy account activeor not
         const select = "SELECT stu.id as id,stu.email,stu.is_active,act.code as code FROM student as stu left join activation as act on stu.id=act.stu_id where stu.email = ?";
         var result = await common.RunQuery(select, [obj.email]);
 
@@ -210,11 +212,15 @@ exports.login = async (req, res) => {
                 const check_password = await common.RunQuery(check_password_query, [req.body.email, password]);
 
                 if (check_password.length > 0) {
+                    
+                    const jwtSecretKey = "rijvan"
+                    const token = jwt.sign(check_password[0], jwtSecretKey,{
+                                    expiresIn: '5m'
+                                });
                     response = {
                         status: 200,
                         msg: "success",
-                        id: check_password[0].id,
-                        first_name: check_password[0].first_name
+                        token : token
                     }
                 } else {
                     response = {
@@ -244,4 +250,9 @@ exports.login = async (req, res) => {
         }
     }
     res.status(200).send(response);
+}
+
+exports.checklogin = async (req ,res) =>{
+    console.log(req.body.data);
+    res.send(req.body.data)
 }

@@ -251,14 +251,26 @@ function login(){
             //   console.log(a);
                 a.textContent = `${res.msg}`;
                 a.href = `#`;
-            }else if(res.status == 200){
+                
+          }else if(res.status == 200){
                 document.getElementById("login-btn").style.display =  "none";
-                a.textContent = `${res.msg}, welcome ${res.first_name}`;
+                a.textContent = `${res.msg}`;
+                setCookie('token', res.token, 1);
+                // console.log("log :",document.cookie);
                 a.href = `#`;
-          }
+         }
         } else {
             console.log(`Error: ${xhr}`);
         }
     };
     xhr.send(Data);
+}
+
+function setCookie(name,value,minutes){
+    let now = new Date();
+    let time = now.getTime();
+
+    time += minutes * 60000;
+    now.setTime(time);
+    document.cookie = name + '=' + value + '; expires=' + now.toUTCString() + '; path=/';
 }

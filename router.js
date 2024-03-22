@@ -16,6 +16,8 @@ router.post('/api/activation', registation.activationapi);
 router.post('/api/GenerateforgotpasswordLink', registation.GenerateforgotpasswordLink);
 router.post('/api/createNewPassword', registation.createNewPassword);
 router.post('/api/login', registation.login);
+router.post('/api/checklogin', registation.checklogin);
+
 
 
 // router.get('/api/registation', registation.InsertRegistation);
