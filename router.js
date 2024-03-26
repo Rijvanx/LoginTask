@@ -19,7 +19,6 @@ router.post('/api/login', registation.login);
 router.post('/api/checklogin', registation.checklogin);
 
 
-
 // router.get('/api/registation', registation.InsertRegistation);
 
 

@@ -1,6 +1,7 @@
 const con = require("../../Databases/config");
 const common = require("../common/function");
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 
 exports.InsertRegistation = async (req, res) => {
@@ -68,7 +69,6 @@ exports.InsertRegistation = async (req, res) => {
 
     }
     catch (err) {
-        console.log(err);
         response = [{
             status: "400",
             msg: err,
@@ -102,7 +102,6 @@ exports.activationapi = async (req, res) => {
             }])
         }
         catch (err) {
-            console.log(err);
             res.send([{
                 stutus: 400,
                 err: err
@@ -179,7 +178,6 @@ exports.createNewPassword = async (req, res) => {
             };
         }
         catch (err) {
-            console.log(err);
             response = {
                 stutus: 400,
                 msg: err
@@ -213,10 +211,11 @@ exports.login = async (req, res) => {
 
                 if (check_password.length > 0) {
                     
-                    const jwtSecretKey = "rijvan"
-                    const token = jwt.sign(check_password[0], jwtSecretKey,{
+                    const key = process.env.SECRET_KEY;
+                    const token = jwt.sign(check_password[0], key,{
                                     expiresIn: '5m'
                                 });
+                    res.cookie('token', token);
                     response = {
                         status: 200,
                         msg: "success",
@@ -253,6 +252,33 @@ exports.login = async (req, res) => {
 }
 
 exports.checklogin = async (req ,res) =>{
-    console.log(req.body.data);
-    res.send(req.body.data)
+    var response;
+    if(req.cookies.token){
+        const token = req.cookies.token;
+        // console.log(userCookie);
+        try{
+            const key = process.env.SECRET_KEY;
+            let decoded = jwt.verify(token, key);
+            const query = "SELECT email,first_name FROM student where id = ?";
+            const result = await common.RunQuery(query, [decoded.id]);
+            response = {
+                status : 200,
+                msg : "Logged",
+                data : result[0]
+            }
+        }
+        catch(e){
+            response = {
+                status : 400,
+                msg : e,
+            }
+        }
+    }else{
+        response = {
+            status : 400,
+            msg : "token not found",
+        }
+    }
+    
+    res.send(response)
 }

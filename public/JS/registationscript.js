@@ -1,3 +1,4 @@
+// const { checklogin } = require("../../controllers/api/registation");
 
 // ========================= validation start ========================//
 const merge = (a, b, predicate = (a, b) => a === b) => {
@@ -88,9 +89,7 @@ function validation_activeuser(){
     }
 }
 
-
 // ================== end ====================//
-
 
 function insert(){
 
@@ -160,9 +159,8 @@ function activeuser(){
     xhr.send(Data);
 }
 
-
-
 // ==================== forgot password =====================//
+
 function forgotpassword(){
     let formData = new FormData(document.querySelector(`#forgotpassword-form`));
     const xhr = new XMLHttpRequest();
@@ -229,41 +227,46 @@ function passwordreset(){
     xhr.send(Data);
 }
 
-
 function login(){
-    let formData = new FormData(document.querySelector(`#login-form`));
-    const xhr = new XMLHttpRequest();
-    xhr.open("post", "/api/login");
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-   
-    const Data = new URLSearchParams(formData);
-    // console.log(Data);
-   
-    xhr.onload = () => {
-        if (xhr.status == 200) {
-          const res = JSON.parse(xhr.responseText);
-          console.log(res);
-          const alert = document.getElementById("alert");
-          alert.style.display = "block";
-          const a = alert.getElementsByTagName("a")[0];
-          
-          if(res.status == 400){
-            //   console.log(a);
-                a.textContent = `${res.msg}`;
-                a.href = `#`;
-                
-          }else if(res.status == 200){
-                document.getElementById("login-btn").style.display =  "none";
-                a.textContent = `${res.msg}`;
-                setCookie('token', res.token, 1);
-                // console.log("log :",document.cookie);
-                a.href = `#`;
-         }
-        } else {
-            console.log(`Error: ${xhr}`);
-        }
-    };
-    xhr.send(Data);
+    console.log("hello");
+    // if(!checklogin()){
+        
+    // } else {
+        let formData = new FormData(document.querySelector(`#login-form`));
+        const xhr = new XMLHttpRequest();
+        xhr.open("post", "/api/login");
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+       
+        const Data = new URLSearchParams(formData);
+        // console.log(Data);
+       
+        xhr.onload = () => {
+            if (xhr.status == 200) {
+              const res = JSON.parse(xhr.responseText);
+              console.log(res);
+              const alert = document.getElementById("alert-login");
+              alert.style.display = "block";
+              const a = alert.getElementsByTagName("a")[0];
+              
+              if(res.status == 400){
+                //   console.log(a);
+                    a.textContent = `${res.msg}`;
+                    a.href = `#`;
+                    
+              }else if(res.status == 200){
+    
+                    document.getElementById("login-btn").style.display =  "none";
+                    a.textContent = `${res.msg}`;
+                    // console.log("log :",document.cookie);
+                    a.href = `#`;
+             }
+            } else {
+                console.log(`Error: ${xhr}`);
+            }
+        };
+        xhr.send(Data);
+    // }
+
 }
 
 function setCookie(name,value,minutes){
